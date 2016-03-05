@@ -1,17 +1,9 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
-```{r setoptions, echo=FALSE}
-library(knitr)
-opts_chunk$set(fig.path = "./figure/")
-```
+# Reproducible Research: Peer Assessment 1
+
 
 ## Loading and preprocessing the data
-```{r}
 
+```r
         if(!file.exists("activity.csv")) {
                 if(!file.exists("activity.zip")) {
                      download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip",
@@ -26,33 +18,44 @@ opts_chunk$set(fig.path = "./figure/")
 
 ## What is mean total number of steps taken per day?
 
-```{r}
+
+```r
         nadata <- is.na(activitydata$steps) 
         stepdata <- activitydata[!nadata,]
         #stepdata$date <- as.Date(as.character(stepdata$date), "%Y-%m-%d")
         daytotal <- aggregate(steps ~ date, stepdata, sum)
-        
 ```
 * The mean total number of steps are 
-```{r} 
-        mean(daytotal$steps)
 
+```r
+        mean(daytotal$steps)
+```
+
+```
+## [1] 10766.19
 ```
 * The median is 
-```{r} 
+
+```r
         median(daytotal$steps)
+```
 
 ```
+## [1] 10765
+```
 * The histogram of the Total Steps per Day reflects these values.
-```{r totalhist}
+
+```r
         hist(daytotal$steps, main = "Histogram of the Total Steps Per Day",
      xlab = "Number of Steps")
-        
 ```
+
+![](./figure/totalhist-1.png)
 
 ## What is the average daily activity pattern?
 
-```{r avgdaily}
+
+```r
         stepintervalmean <- aggregate(steps ~ interval, stepdata, mean)
 with(stepintervalmean, plot(interval, steps, type = "l", 
                             xlab = "Interval (using 5-min intervals)", 
@@ -65,14 +68,26 @@ title(main = "Average Daily Activity Pattern")
         abline(v=maxInterval, col = "red")
         axis(1, at=maxInterval, label=maxInterval)
 ```
+
+![](./figure/avgdaily-1.png)
   
 * The interval with the highest number of steps is located on the x axis at:
-```{r}
+
+```r
         maxInterval
 ```
+
+```
+## [1] 835
+```
 * At this interval the number of steps are:
-```{r}
+
+```r
         maxSteps
+```
+
+```
+## [1] 206.1698
 ```
 
 ## Imputing missing values
@@ -82,7 +97,8 @@ title(main = "Average Daily Activity Pattern")
 in the previous analysis. Then, replacing each NA with the corresponding  
 calculated interval value.    
 
-```{r imputedhist}
+
+```r
         #Find all activity where steps are NA
         actna <- activitydata[nadata,]
         imputactivity <- activitydata
@@ -103,18 +119,27 @@ imputactivity[nadata,]$steps <- dfna$steps
 impdaytotal <- aggregate(steps ~ date, imputactivity, sum)
 hist(impdaytotal$steps, main = "Histogram of the Total Steps Per Day (Imputed)",
      xlab = "Number of Steps")
-
 ```
+
+![](./figure/imputedhist-1.png)
   
 * The imputed mean total number of steps are 
-```{r} 
+
+```r
         mean(impdaytotal$steps)
+```
 
 ```
+## [1] 10766.19
+```
 * The imputed median is 
-```{r} 
-        median(impdaytotal$steps)
 
+```r
+        median(impdaytotal$steps)
+```
+
+```
+## [1] 10766.19
 ```
 
 
@@ -124,7 +149,8 @@ hist(impdaytotal$steps, main = "Histogram of the Total Steps Per Day (Imputed)",
 Yes,the graphs below show the differences between the activity on a weekday and  
 weekend.  
 
-```{r activeweek}
+
+```r
 #Create factor varible for the weekdays and weekends
 library(lattice)
 weekday <- c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
@@ -139,5 +165,7 @@ with( impintervalmean, xyplot(steps ~ interval | weektype, type ="l",
                          ylab = "Average number of Steps",
                          xlab = "Interval (using 5-min intervals)"))
 ```
+
+![](./figure/activeweek-1.png)
 
 
